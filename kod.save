@@ -1,0 +1,127 @@
+function report_page(a, b, c) {
+var e = prompt(report_msg1);
+if (e) {
+$.ajax({
+type: "POST",
+url: "system/report.php",
+cache: false,
+data: "id=" + a + "&url=" + b + "&module=" + c + "&reason=" + e,
+success: function(d) {
+switch (d) {
+case '1':
+alert(report_msg2);
+skipuser(a, '1');
+break;
+case '2':
+alert(report_msg4);
+break;
+default:
+alert(report_msg3);
+break
+}
+}
+})
+}
+}
+
+
+
+function click_refresh() {
+if (start_click < end_click) {
+start_click = start_click + 1
+} else {
+location.reload(true)
+}
+}
+
+function skipuser(b) {
+$("#Hint").html("
+");
+$.ajax({
+type: "POST",
+url: "system/modules/ycomme/process.php",
+data: "step=skip&sid=" + b,
+success: function(a) {
+$("#Hint").html(a);
+remove(b);
+click_refresh()
+}
+})
+}
+var targetWin;
+
+function ModulePopup(d, e, f, g, i) {
+if (targetWin && !targetWin.closed) {} else {
+var j = (screen.width / 2) - (screen.width / 4);
+var k = (screen.height / 2) - (screen.height / 4);
+var l = hideref + "http://www.youtube.com/watch?v=" + e;
+$("#Hint").html("
+");
+$.ajax({
+type: "POST",
+url: "system/modules/ycomme/process.php",
+data: "get=1&url=" + e + "&pid=" + d,
+success: function(a) {
+if (!isNaN(a)) {
+$("#Hint").html("
+" + msg1 + "
+");
+var b = setTimeout(function() {
+targetWin.close()
+}, 30000);
+var c = setInterval(function() {
+if (targetWin.closed) {
+clearTimeout(c);
+clearTimeout(b);
+do_click(d, g, i)
+}
+}, 1000)
+} else {
+$("#Hint").html("
+" + msg2 + "
+")
+}
+}
+});
+targetWin = window.open(l, f, "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=" + screen.width / 2 + ", height=" + screen.height / 2 + ", top=" + k + ", left=" + j)
+}
+}
+
+function do_click(b, c, e) {
+$("#Hint").html("
+");
+$.ajax({
+type: "POST",
+url: "system/modules/ycomme/process.php",
+cache: false,
+data: "id=" + b,
+success: function(a) {
+switch (a) {
+case '1':
+$("#Hint").html("
+" + msg4 + " " + c + "" + msg5 + "
+");
+remove(b);
+click_refresh();
+break;
+case '5':
+$("#Hint").html("
+" + msg6 + "
+");
+remove(b);
+break;
+default:
+$("#Hint").html("
+" + msg3 + "
+");
+break
+}
+}
+})
+}
+
+function remove(a) {
+document.getElementById(a).style.display = "none"
+}
+^O
+
